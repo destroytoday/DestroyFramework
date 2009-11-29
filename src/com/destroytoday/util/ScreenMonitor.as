@@ -94,7 +94,7 @@ package com.destroytoday.util {
 		 */		
 		public function ScreenMonitor():void {
 			if (!instantiating) {
-				throw new Error("The ScreenMonitor class canoot be instantiated.");
+				throw new Error("The ScreenMonitor class cannot be instantiated.");
 			} else {
 				instantiating = false;
 			}
