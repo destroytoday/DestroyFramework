@@ -6,12 +6,12 @@
 	<![CDATA[
 
 		import org.flexunit.runner.Request;
-		import test.com.destroytoday.util.StringUtilTestCase;
+		import com.destroytoday.util.StringUtilTestCase;
 
 		public function currentRunTestSuite():Array
 		{
 			var testsToRun:Array = new Array();
-			testsToRun.push(test.com.destroytoday.util.StringUtilTestCase);
+			testsToRun.push(com.destroytoday.util.StringUtilTestCase);
 			return testsToRun;
 		}
 		private function onCreationComplete():void
