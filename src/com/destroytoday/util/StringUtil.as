@@ -56,6 +56,24 @@ package com.destroytoday.util {
 		}
 		
 		/**
+		 * @private
+		 * @param chars
+		 * @return 
+		 */		
+		protected static function slashUnsafeChars(chars:String):String {
+			var unsafeChar:String;
+			var m:uint = unsafeChars.length;
+			
+			for (var i:uint = 0; i < m; ++i) {
+				unsafeChar = unsafeChars.substr(i, 1);
+				
+				if (chars.indexOf(unsafeChar) != -1) chars = chars.replace(unsafeChar, "\\" + unsafeChar);
+			}
+			
+			return chars;
+		}
+		
+		/**
 		 * Returns the string with slashes prepended to all characters specified in the <code>chars</code> parameter
 		 * @param str the string to return slashed
 		 * @param chars the string of chars to slash
@@ -65,21 +83,34 @@ package com.destroytoday.util {
 			// return the unaltered string if str or chars are null or empty
 			if (!str || !chars) return str;
 			
-			var unsafeChar:String;
-			var m:uint = unsafeChars.length;
-			
-			// double slash unsafe characters
-			for (var i:uint = 0; i < m; ++i) {
-				unsafeChar = unsafeChars.substr(i, 1);
-				
-				if (chars.indexOf(unsafeChar) != -1) chars = chars.replace(unsafeChar, "\\" + unsafeChar);
-			}
+			// slash unsafe characters
+			chars = slashUnsafeChars(chars);
 			
 			// build the regular expression that handles the slashing
 			var regex:RegExp = new RegExp("([" + chars + "])", "g");
 			
 			// add the slashes to the specified characters
 			return str.replace(regex, "\\$1");
+		}
+		
+		/**
+		 * Returns the string with slashes removed from all characters specified in the <code>chars</code> parameter
+		 * @param str the string to return stripped of slashes
+		 * @param chars the string of chars to remove slashes from
+		 * @return 
+		 */
+		public static function stripSlashes(str:String, chars:String = "\""):String {
+			// return the unaltered string if str or chars are null or empty
+			if (!str || !chars) return str;
+			
+			// slash unsafe characters
+			chars = slashUnsafeChars(chars);
+			
+			// build the regular expression that removes the slashes
+			var regex:RegExp = new RegExp("\\\\([" + chars + "])", "g");
+			
+			// strip the slashes from the specified characters
+			return str.replace(regex, "$1");
 		}
 	}
 }

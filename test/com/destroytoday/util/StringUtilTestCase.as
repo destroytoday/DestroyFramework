@@ -19,33 +19,33 @@ package com.destroytoday.util {
 			Assert.assertEquals("\"foo\" bar", StringUtil.addSlashes("\"foo\" bar", null));
 			Assert.assertEquals("\"foo\" bar", StringUtil.addSlashes("\"foo\" bar", ""));
 			Assert.assertEquals("foo", StringUtil.addSlashes("foo"));
-			
-			// Result should look like foo\'s bar
 			Assert.assertEquals("foo\\\'s bar", StringUtil.addSlashes("foo's bar", "'"));
-			
-			// Result should look like \"foo\" bar
 			Assert.assertEquals("\\\"foo\\\" bar", StringUtil.addSlashes("\"foo\" bar"));
-			
-			// Result should look like \foo\-\bar
 			Assert.assertEquals("\\foo\\-\\bar", StringUtil.addSlashes("foo-bar", "b-f"));
-			
-			// Result should look like \foo\^\bar
 			Assert.assertEquals("\\foo\\^\\bar", StringUtil.addSlashes("foo^bar", "^fb"));
-			
-			// Result should look like \[\foo\] \bar
 			Assert.assertEquals("\\[\\foo\\] \\bar", StringUtil.addSlashes("[foo] bar", "b][f"));
-			
-			// Result should look like \(\foo\) \bar
 			Assert.assertEquals("\\(\\foo\\) \\bar", StringUtil.addSlashes("(foo) bar", "(bf)"));
-			
-			// Result should look like \foo \bar\?
 			Assert.assertEquals("\\foo \\bar\\?", StringUtil.addSlashes("foo bar?", "fb?"));
-			
-			// Result should look like \foo \bar\.
 			Assert.assertEquals("\\foo \\bar\\.", StringUtil.addSlashes("foo bar.", "fb."));
-			
-			// Result should look like \foo\+\bar
 			Assert.assertEquals("\\foo\\+\\bar", StringUtil.addSlashes("foo+bar", "fb+"));
+		}
+		
+		[Test]
+		public function testStripSlashes():void {
+			Assert.assertNull(StringUtil.stripSlashes(null));
+			Assert.assertEquals("", StringUtil.stripSlashes(""));
+			Assert.assertEquals("\\\"foo\\\" bar", StringUtil.stripSlashes("\\\"foo\\\" bar", null));
+			Assert.assertEquals("\\\"foo\\\" bar", StringUtil.stripSlashes("\\\"foo\\\" bar", ""));
+			Assert.assertEquals("foo", StringUtil.stripSlashes("foo"));
+			Assert.assertEquals("foo's bar", StringUtil.stripSlashes("foo\\'s bar", "'"));
+			Assert.assertEquals("\"foo\" bar", StringUtil.stripSlashes("\\\"foo\\\" bar"));
+			Assert.assertEquals("foo-bar", StringUtil.stripSlashes("\\foo\\-\\bar", "b-f"));
+			Assert.assertEquals("foo^bar", StringUtil.stripSlashes("\\foo\\^\\bar", "^fb"));
+			Assert.assertEquals("[foo] bar", StringUtil.stripSlashes("\\[\\foo\\] \\bar", "b][f"));
+			Assert.assertEquals("(foo) bar", StringUtil.stripSlashes("\\(\\foo\\) \\bar", "(bf)"));
+			Assert.assertEquals("foo bar?", StringUtil.stripSlashes("\\foo \\bar\\?", "fb?"));
+			Assert.assertEquals("foo bar.", StringUtil.stripSlashes("\\foo \\bar\\.", "fb."));
+			Assert.assertEquals("foo+bar", StringUtil.stripSlashes("\\foo\\+\\bar", "fb+"));
 		}
 	}
 }
