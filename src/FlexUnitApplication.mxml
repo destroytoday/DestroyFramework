@@ -7,11 +7,13 @@
 
 		import org.flexunit.runner.Request;
 		import com.destroytoday.util.StringUtilTestCase;
+		import com.destroytoday.util.NumberUtilTestCase;
 
 		public function currentRunTestSuite():Array
 		{
 			var testsToRun:Array = new Array();
 			testsToRun.push(com.destroytoday.util.StringUtilTestCase);
+			testsToRun.push(com.destroytoday.util.NumberUtilTestCase);
 			return testsToRun;
 		}
 		private function onCreationComplete():void
