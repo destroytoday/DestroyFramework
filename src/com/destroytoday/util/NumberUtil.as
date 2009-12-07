@@ -61,7 +61,7 @@ package com.destroytoday.util {
 		 * NumberUtil.pad(2835.3, 4, 2); // returns "2835.30"
 		 * </listing>
 		 */		
-		public static function pad(value:Number, beforePoint:uint, afterPoint:uint):String {
+		public static function pad(value:Number, beforePoint:uint, afterPoint:uint = 0):String {
 			// separate the integer from the decimal
 			var valueArray:Array = String(value).split(".");
 			

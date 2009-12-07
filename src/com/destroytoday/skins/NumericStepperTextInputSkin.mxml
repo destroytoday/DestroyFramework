@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/halo"
+		minHeight="25">
+	
+	<fx:Metadata>
+		[HostComponent("spark.components.TextInput")]
+	</fx:Metadata> 
+	
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="disabled"/>
+	</s:states>
+	
+	<s:Rect top="-1" bottom="-1" left="-1" right="-1">
+		<s:stroke>
+			<s:SolidColorStroke color="0x1B1B1B" />
+		</s:stroke>
+	</s:Rect>
+	
+	<s:Rect width="100%" height="100%">
+		<s:stroke>
+			<s:SolidColorStroke color.normal="0x3B3B3B" color.disabled="0x2B2B2B" />
+		</s:stroke>
+		<s:fill>
+			<s:LinearGradient rotation="90">
+				<s:entries>
+					<s:GradientEntry color="0x222222" />
+					<s:GradientEntry color="0x1B1B1B" />
+				</s:entries>
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
+	
+	<s:RichEditableText id="textDisplay"
+						lineBreak="explicit" 
+						verticalAlign="middle"
+						multiline="false"
+						left="0" right="0" top="0" bottom="0"
+						paddingLeft="4" paddingTop="4"
+						paddingRight="4" paddingBottom="4"
+						color.normal="0xC3C6C8" color.disabled="0x555555" focusedTextSelectionColor="0x007998"
+	/>
+</s:Skin>

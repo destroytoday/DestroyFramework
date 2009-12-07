@@ -1,0 +1,23 @@
+@namespace s "library://ns.adobe.com/flex/spark";
+
+global {
+	focus-color: #007998;
+	focus-thickness: 2;
+	focused-text-selection-color: #007998;
+}
+
+s|Label {
+	color: #AAAAAA;
+}
+
+s|DropDownList {
+	skin-class: ClassReference("com.destroytoday.skins.DropDownListSkin");
+}
+
+s|CheckBox {
+	skin-class: ClassReference("com.destroytoday.skins.CheckBoxSkin");
+}
+
+s|NumericStepper {
+	skin-class: ClassReference("com.destroytoday.skins.NumericStepperSkin");
+}

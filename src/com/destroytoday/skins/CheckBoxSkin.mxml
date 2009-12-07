@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/halo">
+	
+	<fx:Metadata>
+		[HostComponent("spark.components.CheckBox")]
+	</fx:Metadata>
+	
+	<s:states>
+		<s:State name="up" />
+		<s:State name="over" stateGroups="overStates" />
+		<s:State name="down" stateGroups="downStates" />
+		<s:State name="disabled" stateGroups="disabledStates" />
+		<s:State name="upAndSelected" />
+		<s:State name="overAndSelected" stateGroups="overStates" />
+		<s:State name="downAndSelected" stateGroups="downStates" />
+		<s:State name="disabledAndSelected" stateGroups="disabledStates" />
+	</s:states>
+	
+	<s:Group width="25" height="25">
+		<s:Rect top="-1" bottom="-1" left="-1" right="-1">
+			<s:stroke>
+				<s:SolidColorStroke color="0x1B1B1B" />
+			</s:stroke>
+		</s:Rect>
+		<s:Rect top="0" bottom="0" left="0" right="0">
+			<s:stroke>
+				<s:SolidColorStroke color.up="0x3B3B3B" color.overStates="0x4B4B4B" color.downStates="0x3B3B3B" color.upAndSelected="0x3B3B3B" color.disabledStates="0x2B2B2B" />
+			</s:stroke>
+			<s:fill>
+				<s:LinearGradient rotation="90">
+					<s:entries>
+						<s:GradientEntry color="0x222222" />
+						<s:GradientEntry color="0x1B1B1B" />
+					</s:entries>
+				</s:LinearGradient>
+			</s:fill>
+		</s:Rect>
+		<s:Path data="m 0 0 l 8 8 m 0 -8 l -8 8"
+				includeIn="upAndSelected, overAndSelected, downAndSelected, disabledAndSelected"
+				horizontalCenter="-1" verticalCenter="-1">
+			<s:stroke>
+				<s:SolidColorStroke weight="2" caps="square" color="0xC3C6C8" color.disabledAndSelected="0x555555" />
+			</s:stroke>
+		</s:Path>
+	</s:Group>
+	
+	<s:Label id="labelDisplay" textAlign="left" verticalAlign="middle"
+			 verticalCenter="1"
+			 left="30" right="6"
+			 color="0xC3C6C8" color.disabledStates="0x555555"
+	/>
+</s:Skin>
