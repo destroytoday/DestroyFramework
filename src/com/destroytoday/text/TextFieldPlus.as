@@ -43,6 +43,27 @@ package com.destroytoday.text {
 		protected var _heightOffset:Number = 0;
 		
 		/**
+		 * @private 
+		 */		
+		protected var _text:String;
+		
+		/**
+		 * @private 
+		 */		
+		protected var _html:Boolean;
+		
+		/**
+		 * @private
+		 */		
+		protected var needsUpdate:Boolean;
+		
+		/**
+		 * Creates a new TextFieldPlus instance.
+		 */		
+		public function TextFieldPlus() {
+		}
+		
+		/**
 		 * The number of pixels to offset the TextField's height by.
 		 * This property is used to fix the bug where multiline TextFields scroll when autoSize is set.
 		 * @return
@@ -84,39 +105,81 @@ package com.destroytoday.text {
 		override public function set multiline(value:Boolean):void {
 			super.multiline = value;
 			
-			updateSize();
+			if (!multiline || _autoSize == TextFieldAutoSize.NONE) updateSize();
 		}
 		
 		/**
-		 * Creates a new TextFieldPlus instance.
+		 * @inheritDoc
 		 */		
-		public function TextFieldPlus() {
+		override public function get text():String {
+			if (_html || needsUpdate) {
+				return super.text;
+			}
+			
+			return _text;
 		}
 		
 		/**
 		 * @inheritDoc
 		 */		
 		override public function set text(value:String):void {
-			super.text = value;
+			_html = false;
 			
-			updateSize();
+			super.text = _text = value;
+			
+			if (!multiline || _autoSize == TextFieldAutoSize.NONE) updateSize();
 		}
 		
 		/**
 		 * @inheritDoc
 		 */		
 		override public function set htmlText(value:String):void {
+			_html = true;
+			
 			super.htmlText = value;
 			
-			updateSize();
+			if (!multiline || _autoSize == TextFieldAutoSize.NONE) updateSize();
+		}
+		
+		/**
+		 * Indicates whether the TextField's text was set through <code>htmlText</code> (true) or <code>text</code> (false).
+		 * @return 
+		 */		
+		public function get html():Boolean {
+			return _html;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */		
+		override public function appendText(newText:String):void {
+			super.appendText(newText);
+			
+			if (!_html && !needsUpdate) _text += newText;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */		
+		override public function replaceText(beginIndex:int, endIndex:int, newText:String):void {
+			super.replaceText(beginIndex, endIndex, newText);
+			
+			needsUpdate = true;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */		
+		override public function replaceSelectedText(value:String):void {
+			super.replaceSelectedText(value);
+			
+			needsUpdate = true;
 		}
 		
 		/**
 		 * @private
 		 */		
 		protected function updateSize():void {
-			if (!multiline || _autoSize == TextFieldAutoSize.NONE) return;
-			
 			// temporarily set autoSize to actual value
 			super.autoSize = _autoSize;
 			
