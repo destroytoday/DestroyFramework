@@ -1,4 +1,4 @@
-package com.destroytoday.util {
+package com.destroytoday.desktop {
 	import com.destroytoday.events.ScreenMonitorEvent;
 	
 	import flash.display.Screen;

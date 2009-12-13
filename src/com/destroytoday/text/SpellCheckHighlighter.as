@@ -19,13 +19,13 @@ package com.destroytoday.text {
 	[Event(name="update", type="flash.events.Event")]
 
 	/**
-	 * The SpellCheckUnderliner underlines misspelled words in a TextField instance.
+	 * The SpellCheckHighlighter underlines misspelled words in a TextField instance.
 	 * It also adds suggestions to the context menu of misspelled words.
 	 * Note: This class requires Adobe Squiggly
 	 * @see http://labs.adobe.com/technologies/squiggly/
 	 * @author Jonnie Hallman
 	 */	
-	public class SpellCheckUnderliner extends Shape {
+	public class SpellCheckHighlighter extends Shape {
 		/* Characters that cannot exist within words
 		* @private
 		*/		
@@ -126,14 +126,14 @@ package com.destroytoday.text {
 		protected var rightClickedWord:String;
 		
 		/**
-		 * Instantiates the SpellCheckUnderliner.
+		 * Instantiates the SpellCheckHighlighter.
 		 * @param textfield the TextField to spell check and highlight
 		 */		
-		public function SpellCheckUnderliner(textfield:TextField) {
+		public function SpellCheckHighlighter(textfield:TextField) {
 			this.textfield = textfield;
 			
 			// set here so the bitmapData is instantiated and drawn
-			underlineStyle = SpellCheckUnderlineStyle.WAVE;
+			underlineStyle = SpellCheckHighlightStyle.WAVE;
 			
 			spellingDictionary.addEventListener(Event.COMPLETE, dictionaryLoadedHandler);
 			timer.addEventListener(TimerEvent.TIMER_COMPLETE, timerHandler);
@@ -166,7 +166,7 @@ package com.destroytoday.text {
 			
 			_textfield = textfield;
 			
-			// if the TextField is null, reset the underliner
+			// if the TextField is null, reset the highlighter
 			if (!_textfield) {
 				reset();
 				
@@ -180,12 +180,12 @@ package com.destroytoday.text {
 			
 			addTextFieldListeners();
 			
-			// position the underliner with the TextField
-			// be sure to set the TextField's position prior to attached the underliner
-			// if the TextField moves, be sure to move the underliner accordingly
+			// position the highlighter with the TextField.
+			// be sure to set the TextField's position prior to attaching the highlighter.
+			// if the TextField moves, be sure to move the highlighter accordingly.
 			reposition();
 			
-			// if the TextField is already on the stage and the underliner isn't, add it
+			// if the TextField is already on the stage and the highlighter isn't, add it
 			if (_textfield.parent && !parent) {
 				_textfield.parent.addChild(this);
 			}
@@ -194,7 +194,7 @@ package com.destroytoday.text {
 		}
 		
 		/**
-		 * Specifies whether the spell checker and underliner are enabled or not.
+		 * Specifies whether the spell checker and highlighter are enabled or not.
 		 * @default true 
 		 * @return 
 		 */		
@@ -252,7 +252,7 @@ package com.destroytoday.text {
 		
 		/**
 		 * The style of the misspelled words' underline. 
-		 * @default SpellCheckUnderlineStyle.WAVE
+		 * @default SpellCheckHighlightStyle.WAVE
 		 * @return 
 		 */		
 		public function get underlineStyle():String {
@@ -359,7 +359,7 @@ package com.destroytoday.text {
 		}
 		
 		/**
-		 * Erases the underliner, empties misspelled word vectors, and stop the delay.
+		 * Erases the highlighter, empties misspelled word vectors, and stop the delay.
 		 */		
 		protected function reset():void {
 			graphics.clear();
@@ -416,16 +416,16 @@ package com.destroytoday.text {
 				
 				// draw line
 				switch(_underlineStyle) {
-					case SpellCheckUnderlineStyle.SOLID:
+					case SpellCheckHighlightStyle.SOLID:
 						graphics.moveTo(wordLeft, wordBottom);
 						graphics.lineTo(wordRight, wordBottom);
 						break;
-					case SpellCheckUnderlineStyle.DOTTED:
+					case SpellCheckHighlightStyle.DOTTED:
 						graphics.beginBitmapFill(dottedBitmapData);
 						graphics.drawRect(wordLeft, wordBottom, wordRight - wordLeft, dottedBitmapData.height);
 						graphics.endFill();
 						break;
-					case SpellCheckUnderlineStyle.WAVE:
+					case SpellCheckHighlightStyle.WAVE:
 						graphics.beginBitmapFill(waveBitmapData);
 						graphics.drawRect(wordLeft, wordBottom, wordRight - wordLeft, waveBitmapData.height);
 						graphics.endFill();
@@ -442,13 +442,13 @@ package com.destroytoday.text {
 			
 			graphics.clear();
 			
-			if (_underlineStyle != SpellCheckUnderlineStyle.SOLID && !updateBitmap) return;
+			if (_underlineStyle != SpellCheckHighlightStyle.SOLID && !updateBitmap) return;
 			
 			switch (_underlineStyle) {
-				case SpellCheckUnderlineStyle.SOLID:
+				case SpellCheckHighlightStyle.SOLID:
 					graphics.lineStyle(2, _underlineColor);
 					break;
-				case SpellCheckUnderlineStyle.DOTTED:
+				case SpellCheckHighlightStyle.DOTTED:
 					if (!dottedBitmapData) dottedBitmapData = new BitmapData(4, 2, true, 0x00000000);
 					
 					color = 0xFF000000 | _underlineColor;
@@ -458,7 +458,7 @@ package com.destroytoday.text {
 					dottedBitmapData.setPixel32(0, 1, color);
 					dottedBitmapData.setPixel32(1, 1, color);
 					break;
-				case SpellCheckUnderlineStyle.WAVE:
+				case SpellCheckHighlightStyle.WAVE:
 					if (!waveBitmapData) waveBitmapData = new BitmapData(2, 2, true, 0x00000000);
 					
 					color = 0xFF000000 | _underlineColor;
@@ -490,7 +490,7 @@ package com.destroytoday.text {
 		}
 		
 		/**
-		 * Erases the underlines and restarts the delay if the underliner is enabled.
+		 * Erases the underlines and restarts the delay if the highlighter is enabled.
 		 * @private
 		 */		
 		protected function clearAndDelay():void {
@@ -517,7 +517,7 @@ package com.destroytoday.text {
 		}
 		
 		/**
-		 * Moves the underliner to the TextField's position.
+		 * Moves the highlighter to the TextField's position.
 		 */		
 		public function reposition():void {
 			if (_textfield) {
@@ -631,7 +631,7 @@ package com.destroytoday.text {
 		}
 		
 		/**
-		 * Adds the underliner to the stage when the TextField is added to the stage
+		 * Adds the highlighter to the stage when the TextField is added to the stage
 		 * @private
 		 * @param event
 		 */		
@@ -642,7 +642,7 @@ package com.destroytoday.text {
 		}
 		
 		/**
-		 * Removes the underliner from the stage when the Textfield is removed from the stage
+		 * Removes the highlighter from the stage when the Textfield is removed from the stage
 		 * @private
 		 * @param event
 		 */		
