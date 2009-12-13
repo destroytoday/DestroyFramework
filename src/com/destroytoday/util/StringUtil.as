@@ -31,7 +31,7 @@ package com.destroytoday.util {
 		/**
 		 * Characters to automatically double slash because they disrupt the regular expression
 		 */		
-		protected static var unsafeChars:String = "-^[]";
+		public static const REGEX_UNSAFE_CHARS:String = "-^[]\\";
 		
 		/**
 		 * @private
@@ -62,12 +62,12 @@ package com.destroytoday.util {
 		 */		
 		protected static function slashUnsafeChars(chars:String):String {
 			var unsafeChar:String;
-			var m:uint = unsafeChars.length;
+			var m:uint = REGEX_UNSAFE_CHARS.length;
 			
 			for (var i:uint = 0; i < m; ++i) {
-				unsafeChar = unsafeChars.substr(i, 1);
+				unsafeChar = REGEX_UNSAFE_CHARS.substr(i, 1);
 				
-				if (chars.indexOf(unsafeChar) != -1) chars = chars.replace(unsafeChar, "\\" + unsafeChar);
+				if (chars.indexOf(unsafeChar) != -1) chars = chars.replace(REGEX_UNSAFE_CHARS, "\\" + unsafeChar);
 			}
 			
 			return chars;
