@@ -59,5 +59,16 @@ package com.destroytoday.util {
 			Assert.assertEquals("37,217,369", NumberUtil.insertCommas(37217369));
 			Assert.assertEquals("372,173,694", NumberUtil.insertCommas(372173694));
 		}
+
+		[Test]
+		public function testRound():void {
+			Assert.assertEquals("0", NumberUtil.round(0, 4));
+			Assert.assertEquals("5", NumberUtil.round(5, 3));
+			Assert.assertEquals("4.837", NumberUtil.round(4.83725, 3));
+			Assert.assertEquals("7.35", NumberUtil.round(7.3498, 2));
+			Assert.assertEquals("-5", NumberUtil.round(-5, 3));
+			Assert.assertEquals("-4.837", NumberUtil.round(-4.83725, 3));
+			Assert.assertEquals("-7.35", NumberUtil.round(-7.3498, 2));
+		}
 	}
 }

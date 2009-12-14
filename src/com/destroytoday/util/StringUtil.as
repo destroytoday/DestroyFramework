@@ -31,7 +31,9 @@ package com.destroytoday.util {
 		/**
 		 * Characters to automatically double slash because they disrupt the regular expression
 		 */		
-		public static const REGEX_UNSAFE_CHARS:String = "-^[]\\";
+		public static const REGEX_UNSAFE_CHARS:String = "\\-^[]";
+		
+		protected static const TRIM_RIGHT_REGEX:RegExp = /[\s]+$/g;
 		
 		/**
 		 * @private
@@ -48,11 +50,17 @@ package com.destroytoday.util {
 		 * @return 
 		 */		
 		public static function truncate(str:String, len:int):String {
-			// return the string if str is null, an empty str is okay
-			if (str == null) return str;
+			// return the string if str is null, empty, or the length of str is less than or equal to len
+			if (!str || str.length <= len) return str;
+			
+			// short str to len
+			str = str.substr(0, len);
+			
+			// trim the right side of whitespace
+			str = str.replace(TRIM_RIGHT_REGEX, "");
 
-			// append the ellipsis if the length of the string is greater than len, otherwise return str unaltered
-			return (str.length > len) ? str.substr(0, len) + "..." : str;
+			// append the ellipsis
+			return str + "...";
 		}
 		
 		/**
@@ -63,11 +71,11 @@ package com.destroytoday.util {
 		protected static function slashUnsafeChars(chars:String):String {
 			var unsafeChar:String;
 			var m:uint = REGEX_UNSAFE_CHARS.length;
-			
+
 			for (var i:uint = 0; i < m; ++i) {
 				unsafeChar = REGEX_UNSAFE_CHARS.substr(i, 1);
 				
-				if (chars.indexOf(unsafeChar) != -1) chars = chars.replace(REGEX_UNSAFE_CHARS, "\\" + unsafeChar);
+				if (chars.indexOf(unsafeChar) != -1) chars = chars.replace(unsafeChar, "\\" + unsafeChar);
 			}
 			
 			return chars;
@@ -82,13 +90,13 @@ package com.destroytoday.util {
 		public static function addSlashes(str:String, chars:String = "\""):String {
 			// return the unaltered string if str or chars are null or empty
 			if (!str || !chars) return str;
-			
+
 			// slash unsafe characters
 			chars = slashUnsafeChars(chars);
-			
+
 			// build the regular expression that handles the slashing
 			var regex:RegExp = new RegExp("([" + chars + "])", "g");
-			
+
 			// add the slashes to the specified characters
 			return str.replace(regex, "\\$1");
 		}

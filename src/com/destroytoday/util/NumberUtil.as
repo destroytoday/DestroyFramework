@@ -113,6 +113,18 @@ package com.destroytoday.util {
 		}
 		
 		/**
+		 * Rounds a number to the nearest nth, where <code>digits</code> is n / 10.
+		 * @param value the number to round
+		 * @param digits the number of digits to show after the point
+		 * @return 
+		 */		
+		public static function round(value:Number, digits:int):Number {
+			digits = Math.pow(10, digits);
+			
+			return Math.round(value * digits) / digits;
+		}
+		
+		/**
 		 * Inserts commas every three digits in the integer of <code>value</code> 
 		 * @param value the number to insert commas into
 		 * @return <code>value</code> as a <code>String</code> formatted with commas

@@ -10,6 +10,10 @@ package com.destroytoday.util {
 			Assert.assertNull(StringUtil.truncate(null, 30));
 			Assert.assertEquals("foo bar", StringUtil.truncate("foo bar", 30));
 			Assert.assertEquals("foo...", StringUtil.truncate("foo bar", 3));
+			Assert.assertEquals("foo...", StringUtil.truncate("foo bar ", 4));
+			Assert.assertEquals("foo...", StringUtil.truncate("foo\nbar ", 4));
+			Assert.assertEquals("foo...", StringUtil.truncate("foo\rbar ", 4));
+			Assert.assertEquals("foo...", StringUtil.truncate("foo\tbar ", 4));
 		}
 		
 		[Test]
