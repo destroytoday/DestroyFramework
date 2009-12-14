@@ -1,10 +1,7 @@
 package com.destroytoday.util {
 	import com.destroytoday.text.TextFieldPlus;
 	
-	import mx.core.UIComponent;
-	
 	import org.flexunit.Assert;
-	import org.fluint.uiImpersonation.UIImpersonator;
 	
 	public class TextFieldPlusTestCase {
 		public function TextFieldPlusTestCase() {
@@ -17,6 +14,17 @@ package com.destroytoday.util {
 			textfield.text = "Jonnie developed this class.";
 			
 			Assert.assertEquals("Jonnie developed this class.", textfield.text);
+			
+			textfield.text += " He really did!";
+			
+			Assert.assertEquals("Jonnie developed this class. He really did!", textfield.text);
+			
+			textfield.beginText();
+			textfield.text += " Really?";
+			textfield.text += " Yes.";
+			textfield.commitText();
+			
+			Assert.assertEquals("Jonnie developed this class. He really did! Really? Yes.", textfield.text);
 		}
 		
 		[Test]
@@ -38,6 +46,23 @@ package com.destroytoday.util {
 			textfield.replaceText(7, 16, "wrote");
 			
 			Assert.assertEquals("Jonnie wrote this class.", textfield.text);
+		}
+		
+		[Test]
+		public function testAppendText():void {
+			var textfield:TextFieldPlus = new TextFieldPlus();
+			
+			textfield.text = "Jonnie developed this class.";
+			textfield.appendText(" He really did!");
+			
+			Assert.assertEquals("Jonnie developed this class. He really did!", textfield.text);
+			
+			textfield.beginText();
+			textfield.appendText(" Really?");
+			textfield.appendText(" Yes.");
+			textfield.commitText();
+			
+			Assert.assertEquals("Jonnie developed this class. He really did! Really? Yes.", textfield.text);
 		}
 	}
 }

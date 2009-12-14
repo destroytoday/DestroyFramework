@@ -45,7 +45,7 @@ package com.destroytoday.text {
 		/**
 		 * @private 
 		 */		
-		protected var _text:String;
+		protected var _text:String = "";
 		
 		/**
 		 * @private 
@@ -58,9 +58,22 @@ package com.destroytoday.text {
 		protected var needsUpdate:Boolean;
 		
 		/**
+		 * @private 
+		 */		
+		protected var _inTransaction:Boolean;
+		
+		/**
 		 * Creates a new TextFieldPlus instance.
 		 */		
 		public function TextFieldPlus() {
+		}
+		
+		/**
+		 * Indicates whether the TextField is batch appending using begin/commit.
+		 * @return 
+		 */		
+		public function inTransaction():Boolean {
+			return _inTransaction;
 		}
 		
 		/**
@@ -105,7 +118,7 @@ package com.destroytoday.text {
 		override public function set multiline(value:Boolean):void {
 			super.multiline = value;
 			
-			if (!multiline || _autoSize == TextFieldAutoSize.NONE) updateSize();
+			if (multiline && _autoSize != TextFieldAutoSize.NONE) updateSize();
 		}
 		
 		/**
@@ -113,7 +126,9 @@ package com.destroytoday.text {
 		 */		
 		override public function get text():String {
 			if (_html || needsUpdate) {
-				return super.text;
+				needsUpdate = false;
+				
+				_text = super.text;
 			}
 			
 			return _text;
@@ -123,11 +138,14 @@ package com.destroytoday.text {
 		 * @inheritDoc
 		 */		
 		override public function set text(value:String):void {
+			needsUpdate = false;
+			
 			_html = false;
+			_text = value;
+
+			if (!_inTransaction) super.text = value;
 			
-			super.text = _text = value;
-			
-			if (!multiline || _autoSize == TextFieldAutoSize.NONE) updateSize();
+			if (multiline && _autoSize != TextFieldAutoSize.NONE) updateSize();
 		}
 		
 		/**
@@ -138,7 +156,7 @@ package com.destroytoday.text {
 			
 			super.htmlText = value;
 			
-			if (!multiline || _autoSize == TextFieldAutoSize.NONE) updateSize();
+			if (multiline && _autoSize != TextFieldAutoSize.NONE) updateSize();
 		}
 		
 		/**
@@ -153,9 +171,9 @@ package com.destroytoday.text {
 		 * @inheritDoc
 		 */		
 		override public function appendText(newText:String):void {
-			super.appendText(newText);
-			
+			if (!_inTransaction) super.appendText(newText);
 			if (!_html && !needsUpdate) _text += newText;
+			if (multiline && _autoSize != TextFieldAutoSize.NONE) updateSize();
 		}
 		
 		/**
@@ -164,7 +182,11 @@ package com.destroytoday.text {
 		override public function replaceText(beginIndex:int, endIndex:int, newText:String):void {
 			super.replaceText(beginIndex, endIndex, newText);
 			
-			needsUpdate = true;
+			if (beginIndex == length && !_html && !needsUpdate) {
+				_text += newText;
+			} else {
+				needsUpdate = true;
+			}
 		}
 		
 		/**
@@ -174,6 +196,18 @@ package com.destroytoday.text {
 			super.replaceSelectedText(value);
 			
 			needsUpdate = true;
+		}
+		
+		public function beginText():void {
+			_inTransaction = true;
+			
+			if (needsUpdate) _text = text;
+		}
+		
+		public function commitText():void {
+			_inTransaction = false;
+			
+			text = _text;
 		}
 		
 		/**
