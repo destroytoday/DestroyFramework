@@ -94,7 +94,11 @@ package com.destroytoday.text {
 		override public function set multiline(value:Boolean):void {
 			super.multiline = value;
 			
-			if (multiline && _autoSize != TextFieldAutoSize.NONE) updateSize();
+			if (multiline && _autoSize != TextFieldAutoSize.NONE) {
+				updateSize();
+			} else {
+				super.autoSize = _autoSize;
+			}
 		}
 		
 		/**

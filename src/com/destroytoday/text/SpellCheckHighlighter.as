@@ -221,11 +221,11 @@ package com.destroytoday.text {
 		}
 		
 		/**
-		 * A vector of the misspelled words in the TextField.
+		 * A cloned vector of the misspelled words in the TextField.
 		 * @return 
 		 */		
 		public function get misspelledWords():Vector.<String> {
-			return _misspelledWords;
+			return _misspelledWords.concat();
 		}
 		
 		/**
