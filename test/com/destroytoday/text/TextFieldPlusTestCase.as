@@ -1,5 +1,4 @@
-package com.destroytoday.util {
-	import com.destroytoday.text.TextFieldPlus;
+package com.destroytoday.text {
 	
 	import org.flexunit.Assert;
 	

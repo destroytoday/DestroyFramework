@@ -6,12 +6,18 @@
 	<![CDATA[
 
 		import org.flexunit.runner.Request;
+		import com.destroytoday.util.NumberUtilTestCase;
 		import com.destroytoday.util.StringUtilTestCase;
+		import com.destroytoday.util.DisplayObjectUtilTestCase;
+		import com.destroytoday.text.TextFieldPlusTestCase;
 
 		public function currentRunTestSuite():Array
 		{
 			var testsToRun:Array = new Array();
+			testsToRun.push(com.destroytoday.util.NumberUtilTestCase);
 			testsToRun.push(com.destroytoday.util.StringUtilTestCase);
+			testsToRun.push(com.destroytoday.util.DisplayObjectUtilTestCase);
+			testsToRun.push(com.destroytoday.text.TextFieldPlusTestCase);
 			return testsToRun;
 		}
 		private function onCreationComplete():void
