@@ -84,7 +84,7 @@ package com.destroytoday.debug {
 		 * Specifies whether to trace print entries. 
 		 * @default true
 		 */	
-		public static var tracePrints:Boolean = true;
+		public static var tracePrint:Boolean = true;
 
 		/**
 		 * The Console class provides developers with methods to debug applications.
@@ -107,6 +107,8 @@ package com.destroytoday.debug {
 		
 			loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, uncaughtErrorHandler);
 			timer.addEventListener(TimerEvent.TIMER_COMPLETE, delayHandler);
+			
+			//fileStream.openAsync(file, FileMode.APPEND);
 			
 			buffer = 
 				"----------------------------------------------------------------------\n" +
@@ -193,7 +195,7 @@ package com.destroytoday.debug {
 			
 			queue(entry);
 			
-			if (tracePrints) trace(entry);
+			if (tracePrint) trace(entry);
 		}
 		
 		/**
@@ -264,7 +266,7 @@ package com.destroytoday.debug {
 			} else {
 				mode = FileMode.APPEND;
 			}
-			
+
 			fileStream.openAsync(file, mode);
 			fileStream.writeUTFBytes(buffer);
 			
