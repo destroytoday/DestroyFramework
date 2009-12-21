@@ -1,6 +1,7 @@
 package com.destroytoday.text {
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFieldType;
 	
 	/**
 	 * The TextFieldPlus class fixes the autoSize bugs in the TextField class.
@@ -105,7 +106,7 @@ package com.destroytoday.text {
 		 * @inheritDoc
 		 */		
 		override public function get text():String {
-			if (_html || needsUpdate) {
+			if (_html || needsUpdate || type == TextFieldType.INPUT) {
 				needsUpdate = false;
 				
 				_text = super.text;
