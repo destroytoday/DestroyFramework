@@ -247,9 +247,9 @@ package com.destroytoday.timer {
 
 			++_frameCount;
 
-			// loop until the callback returns AsyncLoopAction.END, currentCount exceeds countLimit or the process time exceeds timerLimit
+			// loop until the callback returns AsyncLoopAction.BREAK, currentCount exceeds countLimit or the process time exceeds timerLimit
 			do {
-				if (_callback() == AsyncLoopAction.END || _countLimit > 0 && _currentCount >= _countLimit) {
+				if (_callback() == AsyncLoopAction.BREAK || _countLimit > 0 && _currentCount >= _countLimit) {
 					complete();
 					break;
 				}

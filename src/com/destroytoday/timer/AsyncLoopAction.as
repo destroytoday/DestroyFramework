@@ -12,7 +12,7 @@ package com.destroytoday.timer {
 		/**
 		 * Ends the loop.
 		 */
-		public static const END:String = "end";
+		public static const BREAK:String = "break";
 
 		/**
 		 * @private
