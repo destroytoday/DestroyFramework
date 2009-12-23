@@ -37,12 +37,12 @@ package com.destroytoday.timer {
 		/**
 		 * @private
 		 */
-		protected var _timerLimit:int = 20;
+		protected var _timerLimit:int;
 
 		/**
 		 * @private
 		 */
-		protected var _countLimit:int = -1;
+		protected var _countLimit:int;
 
 		/**
 		 * @private
@@ -68,17 +68,17 @@ package com.destroytoday.timer {
 		/**
 		 * Instantiates the AsyncLoop class.
 		 */
-		public function AsyncLoop(callback:Function = null, timerLimit:int = -1, countLimit:int = -1) {
+		public function AsyncLoop(callback:Function = null, countLimit:int = -1, timerLimit:int = 20) {
 			if (callback != null) {
 				_callback = callback;
 			}
 
-			if (timerLimit > 0) {
-				_timerLimit = timerLimit;
-			}
-
 			if (countLimit > 0) {
 				_countLimit = countLimit;
+			}
+
+			if (timerLimit > 0) {
+				_timerLimit = timerLimit;
 			}
 		}
 
