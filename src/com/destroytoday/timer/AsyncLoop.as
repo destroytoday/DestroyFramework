@@ -15,9 +15,23 @@ package com.destroytoday.timer {
 	 */
 	public class AsyncLoop extends EventDispatcherPlus {
 		/**
-		 * @private
+		 * The function to call with each tick of the loop.
+		 * This function MUST return a Boolean indicating whether to continue the loop (false) or to complete it (true).
 		 */
-		protected var _callback:Function;
+		public var callback:Function;
+
+		/**
+		 * The limit in milliseconds of each set of counts until it carries over to the next frame.
+		 * @default 20
+		 */
+		public var timerLimit:int = 20;
+
+		/**
+		 * The limit of the loop count.
+		 * Any value below 1 disables the limit.
+		 * @default -1
+		 */
+		public var countLimit:int = -1;
 
 		/**
 		 * @private
@@ -33,16 +47,6 @@ package com.destroytoday.timer {
 		 * @private
 		 */
 		protected var _timerEnd:int = -1;
-
-		/**
-		 * @private
-		 */
-		protected var _timerLimit:int;
-
-		/**
-		 * @private
-		 */
-		protected var _countLimit:int;
 
 		/**
 		 * @private
@@ -70,68 +74,16 @@ package com.destroytoday.timer {
 		 */
 		public function AsyncLoop(callback:Function = null, countLimit:int = -1, timerLimit:int = 20) {
 			if (callback != null) {
-				_callback = callback;
+				this.callback = callback;
 			}
 
 			if (countLimit > 0) {
-				_countLimit = countLimit;
+				this.countLimit = countLimit;
 			}
 
 			if (timerLimit > 0) {
-				_timerLimit = timerLimit;
+				this.timerLimit = timerLimit;
 			}
-		}
-
-		/**
-		 * The function to call with each tick of the loop.
-		 * This function MUST return a Boolean indicating whether to continue the loop (false) or to complete it (true).
-		 * @return
-		 */
-		public function get callback():Function {
-			return _callback;
-		}
-
-		/**
-		 * @private
-		 * @param value
-		 */
-		public function set callback(value:Function):void {
-			_callback = value;
-		}
-
-		/**
-		 * The limit in milliseconds of each set of counts until it carries over to the next frame.
-		 * @return
-		 * @default 20
-		 */
-		public function get timerLimit():int {
-			return _timerLimit;
-		}
-
-		/**
-		 * @private
-		 * @param value
-		 */
-		public function set timerLimit(value:int):void {
-			_timerLimit = value;
-		}
-
-		/**
-		 * The limit of the loop count.
-		 * Any value below 1 disables the limit.
-		 * @default -1
-		 * @return
-		 */
-		public function get countLimit():int {
-			return _countLimit
-		}
-
-		/**
-		 * @private
-		 * @param value
-		 */
-		public function set countLimit(value:int):void {
-			_countLimit = value;
 		}
 
 		/**
@@ -249,13 +201,13 @@ package com.destroytoday.timer {
 
 			// loop until the callback returns AsyncLoopAction.BREAK, currentCount exceeds countLimit or the process time exceeds timerLimit
 			do {
-				if (_callback() == AsyncLoopAction.BREAK || _countLimit > 0 && _currentCount >= _countLimit) {
+				if (callback() == AsyncLoopAction.BREAK || countLimit > 0 && _currentCount >= countLimit) {
 					complete();
 					break;
 				}
 
 				++_currentCount;
-			} while (getTimer() - _timerChange < _timerLimit);
+			} while (getTimer() - _timerChange < timerLimit);
 
 			if (hasEventListener(Event.CHANGE)) {
 				dispatchEvent(new Event(Event.CHANGE));
