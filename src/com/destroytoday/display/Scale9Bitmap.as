@@ -189,7 +189,7 @@ package com.destroytoday.display {
 		 */		
 		public function setup(bitmapData:BitmapData, scale9Grid:Rectangle):void {
 			// clear the BitmapData from memory
-			if (_bitmapData) _bitmapData.dispose();
+			if (_bitmapData && _bitmapData != bitmapData) _bitmapData.dispose();
 			
 			_bitmapData = bitmapData;
 			_scale9Grid = scale9Grid;
@@ -248,7 +248,7 @@ package com.destroytoday.display {
 		 */		
 		public function set bitmapData(bitmapData:BitmapData):void {
 			// clear the BitmapData from memory
-			if (_bitmapData) _bitmapData.dispose();
+			if (_bitmapData && _bitmapData != bitmapData) _bitmapData.dispose();
 			
 			_bitmapData = bitmapData;
 			
