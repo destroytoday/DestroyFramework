@@ -286,12 +286,16 @@ package com.destroytoday.net {
 		}
 		
 		/**
-		 * Cancels the load, clears <code>data</code> from memory, and nullifies the data and URL.
+		 * Cancels the load, clears <code>data</code> from memory, removes listeners and nullifies the data and URL.
 		 */		
 		public function dispose():void {
 			cancel();
 			
 			if (_data) System.disposeXML(_data);
+			_openSignal.removeAll();
+			_completeSignal.removeAll();
+			_errorSignal.removeAll();
+			_cancelSignal.removeAll();
 			
 			_loader.data = null;
 			_request.data = null;
