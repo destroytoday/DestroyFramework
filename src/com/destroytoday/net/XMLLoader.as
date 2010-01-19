@@ -31,7 +31,7 @@ package com.destroytoday.net {
 		 * Signal(target, errorType, errorMessage)
 		 * @private 
 		 */		
-		protected var _errorSignal:Signal = new Signal();
+		protected var _errorSignal:Signal = new Signal(XMLLoader, String, String);
 		
 		/**
 		 * Signal(target)
