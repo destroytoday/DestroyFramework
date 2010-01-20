@@ -331,7 +331,7 @@ package com.destroytoday.net {
 		}
 		
 		/**
-		 * Cancels the load, clears <code>data</code> from memory, removes listeners and nullifies the data and URL.
+		 * Reverts the loader to its factory settings, as if it were just instantiated.
 		 */		
 		public function dispose():void {
 			cancel();
@@ -342,6 +342,11 @@ package com.destroytoday.net {
 			_errorSignal.removeAll();
 			_cancelSignal.removeAll();
 			
+			_includeResponseInfo = false;
+			_responseStatus = -1;
+			_responseHeaders = null;
+			_currentRetryCount = 0;
+			_retryCount = 0;
 			_loader.data = null;
 			if (_request) {
 				_request.data = null;
