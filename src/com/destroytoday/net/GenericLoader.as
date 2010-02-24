@@ -5,6 +5,7 @@ package com.destroytoday.net {
 	import flash.events.SecurityErrorEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
+	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 	import flash.system.System;
 	import flash.utils.getQualifiedClassName;
@@ -349,6 +350,7 @@ package com.destroytoday.net {
 			_retryCount = 0;
 			_loader.data = null;
 			if (_request) {
+				_request.method = URLRequestMethod.GET;
 				_request.data = null;
 				_request.url = null;
 			}

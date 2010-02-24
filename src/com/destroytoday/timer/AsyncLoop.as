@@ -1,9 +1,11 @@
 package com.destroytoday.timer {
 	import com.destroytoday.events.EventDispatcherPlus;
-
+	
 	import flash.display.Shape;
 	import flash.events.Event;
 	import flash.utils.getTimer;
+	
+	import org.osflash.signals.Signal;
 
 	[Event(name="open", type="flash.events.Event")]
 	[Event(name="change", type="flash.events.Event")]
@@ -13,7 +15,27 @@ package com.destroytoday.timer {
 	 * The AsyncLoop class spreads out large processes to prevent stalls in the framerate.
 	 * @author Jonnie Hallman
 	 */
-	public class AsyncLoop extends EventDispatcherPlus {
+	public class AsyncLoop {
+		/**
+		 * @private 
+		 */		
+		protected var _started:Signal = new Signal();
+		
+		/**
+		 * @private 
+		 */		
+		protected var _changed:Signal = new Signal();
+		
+		/**
+		 * @private 
+		 */		
+		protected var _completed:Signal = new Signal();
+		
+		/**
+		 * @private 
+		 */		
+		protected var _cancelled:Signal = new Signal();
+		
 		/**
 		 * The function to call with each tick of the loop.
 		 * This function MUST return a Boolean indicating whether to continue the loop (false) or to complete it (true).
@@ -85,6 +107,38 @@ package com.destroytoday.timer {
 				this.timerLimit = timerLimit;
 			}
 		}
+		
+		/**
+		 * Returns the Signal that dispatches when the loop starts. 
+		 * @return 
+		 */		
+		public function get started():Signal {
+			return _started;
+		}
+		
+		/**
+		 * Returns the Signal that dispatches when the loop changes. 
+		 * @return 
+		 */		
+		public function get changed():Signal {
+			return _changed;
+		}
+		
+		/**
+		 * Returns the Signal that dispatches when the loop completes. 
+		 * @return 
+		 */		
+		public function get completed():Signal {
+			return _completed;
+		}
+		
+		/**
+		 * Returns the Signal that dispatches when the loop is cancelled.
+		 * @return 
+		 */		
+		public function get cancelled():Signal {
+			return _cancelled;
+		}
 
 		/**
 		 * Indicates if the loop is running.
@@ -138,11 +192,9 @@ package com.destroytoday.timer {
 		public function start():void {
 			_running = true;
 
-			if (hasEventListener(Event.OPEN)) {
-				dispatchEvent(new Event(Event.OPEN));
-			}
-
 			_timerStart = getTimer();
+			
+			_started.dispatch(this);
 
 			_shape.addEventListener(Event.ENTER_FRAME, enterframeHandler, false, 0, true);
 		}
@@ -168,9 +220,7 @@ package com.destroytoday.timer {
 
 			_shape.removeEventListener(Event.ENTER_FRAME, enterframeHandler);
 
-			if (hasEventListener(Event.CANCEL)) {
-				dispatchEvent(new Event(Event.CANCEL));
-			}
+			_cancelled.dispatch(this);
 		}
 
 		/**
@@ -183,9 +233,7 @@ package com.destroytoday.timer {
 
 			_shape.removeEventListener(Event.ENTER_FRAME, enterframeHandler);
 
-			if (hasEventListener(Event.COMPLETE)) {
-				dispatchEvent(new Event(Event.COMPLETE));
-			}
+			_completed.dispatch(this);
 		}
 
 		/**
@@ -209,9 +257,7 @@ package com.destroytoday.timer {
 				++_currentCount;
 			} while (getTimer() - _timerChange < timerLimit);
 
-			if (hasEventListener(Event.CHANGE)) {
-				dispatchEvent(new Event(Event.CHANGE));
-			}
+			_changed.dispatch(this);
 		}
 	}
 }

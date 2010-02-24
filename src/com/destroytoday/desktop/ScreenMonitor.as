@@ -7,167 +7,113 @@ package com.destroytoday.desktop {
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	
-	[Event(name="screens_change", type="com.destroytoday.events.ScreenMonitorEvent")]
-
+	import org.osflash.signals.Signal;
+	
 	/**
 	 * The ScreenMonitor class notifies when screens are connected or disconnected.
 	 * @author Jonnie Hallman
 	 */	
-	public class ScreenMonitor extends EventDispatcher {
+	public class ScreenMonitor {
 		/**
 		 * @private 
 		 */		
-		protected static var screens:uint;
-		
-		/**
-		 * @private 
-		 */		
-		protected static var token:int;
+		protected var _screensChanged:Signal = new Signal(Array, Array);
 		
 		/**
 		 * @private 
 		 */		
-		protected static var instantiating:Boolean;
+		protected var screens:Array;
 		
 		/**
 		 * @private 
 		 */		
-		protected static var _monitor:ScreenMonitor;
+		protected var _timer:Timer;
 		
 		/**
 		 * @private 
 		 */		
-		protected static var _timer:Timer;
-		
-		/**
-		 * @private 
-		 */		
-		protected static var _pollInterval:int = 5000;
-		
-		/**
-		 * Indicates whether the ScreenMonitor is actively running or not. 
-		 * @return 
-		 */		
-		public static function get running():Boolean { return timer.running; }
-		
-		/**
-		 * The amount of time, in milliseconds, between polls. 
-		 * @return 
-		 */		
-		public static function get pollInterval():int { return _pollInterval; }
-		
-		/**
-		 * @param value
-		 */		
-		public static function set pollInterval(value:int):void {
-			timer.delay = _pollInterval = value;
-			
-			if (!timer.running) start();
-		}
+		protected var _pollInterval:int = 5000;
 		
 		/**
 		 * @private
 		 */		
 		public function ScreenMonitor():void {
-			if (!instantiating) {
-				throw new Error("The ScreenMonitor class cannot be instantiated.");
-			} else {
-				instantiating = false;
-			}
+			_timer = new Timer(_pollInterval);
+			
+			_timer.addEventListener(TimerEvent.TIMER, pollHandler);
 		}
 		
 		/**
-		 * @private 
+		 * Returns the Signal that dispatches when the screens change.
+		 * The handler arguments are (oldScreens:Array, newScreens:Array) 
 		 * @return 
 		 */		
-		protected static function get monitor():ScreenMonitor {
-			if (!_monitor) {
-				instantiating = true;
-				
-				_monitor = new ScreenMonitor();
-			}
-			
-			return _monitor;
+		public function get screensChanged():Signal {
+			return _screensChanged;
 		}
 		
 		/**
-		 * @private 
+		 * Indicates whether the ScreenMonitor is actively running or not. 
 		 * @return 
 		 */		
-		protected static function get timer():Timer {
-			if (!_timer) {
-				_timer = new Timer(_pollInterval);
-				
-				_timer.addEventListener(TimerEvent.TIMER, pollHandler);
-			}
-			
-			return _timer;
-		}
+		public function get running():Boolean { return _timer.running; }
 		
-		public static function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = true):void {
-			monitor.addEventListener(type, listener, useCapture, priority, useWeakReference);
-		}
-		public static function removeEventListener(type:String, listener:Function, useCapture:Boolean = false):void {
-			monitor.removeEventListener(type, listener, useCapture);
-		}
-		public static function hasEventListener(type:String):Boolean {
-			return monitor.hasEventListener(type);
-		}
-		public static function willTrigger(type:String):Boolean {
-			return monitor.willTrigger(type);
-		}
-		public static function dispatchEvent(event:Event):Boolean {
-			if (monitor.hasEventListener(event.type) || event.bubbles) {
-				return monitor.dispatchEvent(event);
-			}
-
-			return true;
+		/**
+		 * The amount of time, in milliseconds, between polls. 
+		 * @return 
+		 */		
+		public function get pollInterval():int { return _pollInterval; }
+		
+		/**
+		 * @param value
+		 */		
+		public function set pollInterval(value:int):void {
+			_timer.delay = _pollInterval = value;
+			
+			if (!_timer.running) start();
 		}
 		
 		/**
 		 * Starts the ScreenMonitor.
 		 */		
-		public static function start():void {
-			screens = Screen.screens.length;
+		public function start():void {
+			screens = Screen.screens;
 			
-			timer.start();
+			_timer.start();
 		}
 		
 		/**
 		 * Stops the ScreenMonitor.
 		 */		
-		public static function stop():void {
-			timer.reset();
+		public function stop():void {
+			_timer.reset();
 		}
 		
 		/**
 		 * Manually checks whether the number of screens changed.
 		 * If the monitor is running, the timer will reset and continue polling.
 		 */		
-		public static function check():void {
+		public function check():void {
 			_check();
 			
-			if (timer.running) {
-				timer.reset();
-				timer.start();
+			if (_timer.running) {
+				_timer.reset();
+				_timer.start();
 			}
 		}
 		
 		/**
 		 * @private
 		 */		
-		protected static function _check():void {
-			var _screens:uint = Screen.screens.length;
+		protected function _check():void {
+			var newScreens:Array = Screen.screens;
 			
-			if (screens != _screens) {
-				var event:ScreenMonitorEvent = new ScreenMonitorEvent(ScreenMonitorEvent.SCREENS_CHANGE);
+			if (newScreens.length != screens.length) {
+				var oldScreens:Array = screens;
 				
-				event.oldScreens = screens;
-				event.newScreens = _screens;
+				screens = newScreens;
 				
-				screens = _screens;
-				
-				dispatchEvent(event);
+				_screensChanged.dispatch(oldScreens, newScreens);
 			}
 		}
 		
@@ -175,6 +121,6 @@ package com.destroytoday.desktop {
 		 * @private 
 		 * @param event
 		 */		
-		protected static function pollHandler(event:TimerEvent):void { _check(); }
+		protected function pollHandler(event:TimerEvent):void { _check(); }
 	}
 }

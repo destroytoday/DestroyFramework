@@ -69,7 +69,7 @@ package com.destroytoday.util {
 		 * @param steps the number of levels send the DisplayObject backward
 		 * @return the new index of the DisplayObject
 		 */		
-		public static function sendBackward (object:DisplayObject, steps:uint = 1):int {
+		public static function sendBackward(object:DisplayObject, steps:uint = 1):int {
 			if (!object.parent) return -1;
 			
 			var index:int = object.parent.getChildIndex(object) - steps;

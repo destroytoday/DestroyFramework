@@ -63,5 +63,17 @@ package com.destroytoday.util {
 		public static function isOnMultipleScreens(window:NativeWindow):Boolean {
 			return Screen.getScreensForRectangle(window.bounds).length > 1;
 		}
+		
+		/**
+		 * Returns the screen that the window lies on.
+		 * @param window
+		 * @return 
+		 */		
+		public static function getScreen(window:NativeWindow):Screen {
+			var bounds:Rectangle = new Rectangle(window.bounds.left + window.bounds.width * 0.5, window.bounds.top + window.bounds.height * 0.5, 1.0, 1.0);
+			var screens:Array = Screen.getScreensForRectangle(bounds);	
+
+			return screens ? screens[0] : null;
+		}
 	}
 }

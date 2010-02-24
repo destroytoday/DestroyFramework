@@ -99,13 +99,13 @@ package com.destroytoday.debug {
 		 * @param loaderInfo
 		 * 
 		 */		
-		public static function init(path:String, loaderInfo:LoaderInfo):void {
+		public static function init(path:String/*, loaderInfo:LoaderInfo*/):void {
 			file.nativePath = path;
 
 			fileStream.addEventListener(Event.CLOSE, writeCloseHandler);
 			fileStream.addEventListener(IOErrorEvent.IO_ERROR, writeErrorHandler);
 		
-			loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, uncaughtErrorHandler);
+			//loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, uncaughtErrorHandler);
 			timer.addEventListener(TimerEvent.TIMER_COMPLETE, delayHandler);
 			
 			buffer = 
@@ -303,7 +303,7 @@ package com.destroytoday.debug {
 		 * @private
 		 * @param event
 		 */		
-		protected static function uncaughtErrorHandler(event:UncaughtErrorEvent):void {
+		/*protected static function uncaughtErrorHandler(event:UncaughtErrorEvent):void {
 			if (event.error is Error) {
 				error(event.error.errorID, event.error.message + "\n" + event.error.getStackTrace());
 			} else if (event.error is ErrorEvent) {
@@ -311,6 +311,6 @@ package com.destroytoday.debug {
 			} else {
 				error(-1, event.error);
 			}
-		}
+		}*/
 	}
 }
