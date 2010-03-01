@@ -1,10 +1,7 @@
 package com.destroytoday.debug {
-	import flash.display.LoaderInfo;
-	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.TimerEvent;
-	import flash.events.UncaughtErrorEvent;
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
