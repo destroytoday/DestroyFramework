@@ -89,7 +89,7 @@ package com.destroytoday.display {
 			
 			_align = value;
 			
-			updateChildren();
+			invalidateDisplayList();
 		}
 
 		/**
@@ -113,7 +113,7 @@ package com.destroytoday.display {
 				measureChildren = false;
 			}
 
-			updateChildren();
+			invalidateDisplayList();
 		}
 		
 		/**
@@ -131,7 +131,7 @@ package com.destroytoday.display {
 		public function set paddingLeft(value:Number):void {
 			_paddingLeft = value;
 			
-			updateChildren();
+			invalidateDisplayList();
 		}
 		
 		/**
@@ -149,7 +149,7 @@ package com.destroytoday.display {
 		public function set paddingRight(value:Number):void {
 			_paddingRight = value;
 			
-			updateChildren();
+			invalidateDisplayList();
 		}
 		
 		/**
@@ -167,7 +167,7 @@ package com.destroytoday.display {
 		public function set paddingTop(value:Number):void {
 			_paddingTop = value;
 			
-			updateChildren();
+			invalidateDisplayList();
 		}
 		
 		/**
@@ -185,7 +185,7 @@ package com.destroytoday.display {
 		public function set paddingBottom(value:Number):void {
 			_paddingBottom = value;
 			
-			updateChildren();
+			invalidateDisplayList();
 		}
 
 		/**
@@ -205,7 +205,7 @@ package com.destroytoday.display {
 
 			_gap = value;
 
-			updateChildren();
+			invalidateDisplayList();
 		}
 		
 		/**
@@ -225,7 +225,7 @@ package com.destroytoday.display {
 			
 			_excludeInvisible = value;
 			
-			updateChildren();
+			invalidateDisplayList();
 		}
 
 		/**
@@ -261,7 +261,7 @@ package com.destroytoday.display {
 
 			_childrenOffset = value;
 
-			updateChildren();
+			invalidateDisplayList();
 		}
 		
 		/**
@@ -279,7 +279,7 @@ package com.destroytoday.display {
 				measureChildren = false;
 			}
 			
-			updateChildren();
+			invalidateDisplayList();
 		}
 
 		/**
