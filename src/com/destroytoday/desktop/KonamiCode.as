@@ -38,8 +38,8 @@ package com.destroytoday.desktop
 		protected const correctKeyCombination:Array =
 			[
 				Keyboard.UP,
-				Keyboard.DOWN,
 				Keyboard.UP,
+				Keyboard.DOWN,
 				Keyboard.DOWN,
 				Keyboard.LEFT,
 				Keyboard.RIGHT,
