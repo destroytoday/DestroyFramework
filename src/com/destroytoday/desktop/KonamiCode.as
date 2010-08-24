@@ -205,6 +205,8 @@ package com.destroytoday.desktop
 		 */		
 		protected function keyUpHandler(event:KeyboardEvent):void
 		{
+			if (event.ctrlKey || event.shiftKey || event.altKey) return;
+			
 			if (event.keyCode == correctKeyCombination[currentKeyCombination.length])
 			{
 				if (currentKeyCombination.length == correctKeyCombination.length - 1)
