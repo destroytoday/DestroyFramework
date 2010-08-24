@@ -159,6 +159,7 @@ package com.destroytoday.desktop
 		
 		/**
 		 * The time in milliseconds allowed for key-entry before resetting
+		 * The minimum value is 100 milliseconds
 		 * @return 
 		 */		
 		public function get threshold():Number
@@ -205,15 +206,19 @@ package com.destroytoday.desktop
 		 */		
 		protected function keyUpHandler(event:KeyboardEvent):void
 		{
+			// ignore any key presses that have modifiers
 			if (event.ctrlKey || event.shiftKey || event.altKey) return;
 			
+			// if the key pressed is the next one in the combo
 			if (event.keyCode == correctKeyCombination[currentKeyCombination.length])
 			{
+				// if it's the last key (previously confirmed as correct)
 				if (currentKeyCombination.length == correctKeyCombination.length - 1)
 				{
 					executed.dispatch();
 					reset();
 				}
+				// if it's not the last key in the combo, move forward and restart the timer
 				else
 				{
 					currentKeyCombination[currentKeyCombination.length] = event.keyCode;
@@ -222,6 +227,7 @@ package com.destroytoday.desktop
 					thresholdTimer.start();
 				}
 			}
+			// wrong key pressed
 			else
 			{
 				reset();
@@ -234,6 +240,7 @@ package com.destroytoday.desktop
 		 */		
 		protected function thresholdTimerCompleteHandler(event:TimerEvent):void
 		{
+			// too slow
 			reset();
 		}
 	}
