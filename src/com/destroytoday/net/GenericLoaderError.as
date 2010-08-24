@@ -19,6 +19,8 @@ package com.destroytoday.net {
 		 */		
 		public static const RETRY_COUNT:String = "GenericLoaderError.RETRY_COUNT";
 		
+		public static const CANCEL:String = "GenericLoaderError.CANCEL";
+		
 		/**
 		 * @private
 		 */		

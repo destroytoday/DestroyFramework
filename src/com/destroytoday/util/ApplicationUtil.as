@@ -23,6 +23,10 @@ package com.destroytoday.util {
 			return Capabilities.os.toLowerCase().indexOf("mac os") != -1;
 		}
 		
+		public static function get linux():Boolean {
+			return Capabilities.os.toLowerCase().indexOf("linux") != -1;
+		}
+		
 		/**
 		 * Indicates whether the running OS is a PC
 		 * @return

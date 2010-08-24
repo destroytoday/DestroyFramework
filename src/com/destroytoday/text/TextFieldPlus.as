@@ -1,4 +1,5 @@
 package com.destroytoday.text {
+	import flash.text.StyleSheet;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFieldType;
@@ -19,10 +20,17 @@ package com.destroytoday.text {
 		 */		
 		protected var _heightOffset:Number = 0;
 		
+		protected var _maxHeight:Number;
+		
 		/**
 		 * @private 
 		 */		
 		protected var _text:String = "";
+		
+		/**
+		 * @private 
+		 */		
+		protected var _htmlText:String;
 		
 		/**
 		 * @private 
@@ -43,6 +51,27 @@ package com.destroytoday.text {
 		 * Creates a new TextFieldPlus instance.
 		 */		
 		public function TextFieldPlus() {
+		}
+		
+		override public function set width(value:Number):void
+		{
+			super.width = value;
+			
+			if (multiline && _autoSize != TextFieldAutoSize.NONE) updateSize();
+		}
+		
+		public function get maxHeight():Number
+		{
+			return _maxHeight;
+		}
+		
+		public function set maxHeight(value:Number):void
+		{
+			if (value == _maxHeight) return;
+					
+			_maxHeight = value;
+			
+			updateSize();
 		}
 		
 		/**
@@ -129,15 +158,32 @@ package com.destroytoday.text {
 			if (multiline && _autoSize != TextFieldAutoSize.NONE) updateSize();
 		}
 		
+		override public function get htmlText():String
+		{
+			return _htmlText || super.htmlText;
+		}
+		
+		public function get trueHtmlText():String
+		{
+			return super.htmlText;
+		}
+		
 		/**
 		 * @inheritDoc
 		 */		
 		override public function set htmlText(value:String):void {
 			_html = true;
 			
-			super.htmlText = value;
-			
+			super.htmlText = _htmlText = value;
+
 			if (multiline && _autoSize != TextFieldAutoSize.NONE) updateSize();
+		}
+		
+		override public function set styleSheet(value:StyleSheet):void
+		{
+			super.styleSheet = value;
+			
+			if (_htmlText) htmlText = _htmlText;
 		}
 		
 		/**
@@ -194,18 +240,18 @@ package com.destroytoday.text {
 		/**
 		 * @private
 		 */		
-		protected function updateSize():void {
+		public function updateSize():void {
 			// temporarily set autoSize to actual value
 			super.autoSize = _autoSize;
 			
 			// record height when auto-sized
-			var height:Number = this.height;
+			var height:Number = this.height + _heightOffset;
 			
 			// remove autoSize 
 			super.autoSize = TextFieldAutoSize.NONE;
 			
 			// resize using recorded height and offset
-			this.height = height + _heightOffset;
+			this.height = (_maxHeight > 0) ? Math.min(_maxHeight, height) : height;
 		}
 	}
 }

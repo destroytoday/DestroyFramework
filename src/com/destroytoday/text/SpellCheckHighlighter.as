@@ -1,6 +1,7 @@
 package com.destroytoday.text {
 	import com.adobe.linguistics.spelling.SpellChecker;
 	import com.adobe.linguistics.spelling.SpellingDictionary;
+	import com.destroytoday.util.StringUtil;
 	
 	import flash.display.BitmapData;
 	import flash.display.Shape;
@@ -29,19 +30,21 @@ package com.destroytoday.text {
 		/* Characters that cannot exist within words
 		* @private
 		*/		
-		private static const ILLEGAL_CHARACTERS:String = "!@#$%\\^&*()+{}\\[\\]:\"\\/\\\\|_~`\\.,\\-<>\\s";
+		private static const ILLEGAL_CHARACTERS:Array = 
+			['!', '@', '#', '\\$', '%', '\\^', '\\&', '\\*', '\\(', '\\)', '\\+', '{', '}', '\\[', '\\]',
+			':', '\"', '\\/', '\\\\', '\\|', '_', '~', '`', '\\.', ',', '<', '>'];
 		
 		/**
 		 * Regular expression used to pad words with &lt; and &gt; so indexOf wouldn't identify a word within a word.
 		 * @private 
 		 */		
-		private static const WORDS_REPLACE_REGEX:RegExp = new RegExp("\\b([^" + ILLEGAL_CHARACTERS + "]+)\\b", "g");
+		private static const WORDS_REPLACE_REGEX:RegExp = new RegExp("\\b(?<!(" + ILLEGAL_CHARACTERS.join('|') + "))([^" + ILLEGAL_CHARACTERS.join('') + "\\-–—\\s]+)\\b", "g");
 		
 		/**
 		 * Regular expression to match padded words.
 		 * @private 
 		 */		
-		private static const WORDS_MATCH_REGEX:RegExp = new RegExp("<[^" + ILLEGAL_CHARACTERS + "]+>", "g");
+		private static const WORDS_MATCH_REGEX:RegExp = new RegExp("<[^" + ILLEGAL_CHARACTERS.join('') + "\\-–—\\s]+>", "g");
 		
 		/**
 		 * @private 
@@ -387,7 +390,7 @@ package com.destroytoday.text {
 			// 99.9% of the time, endLine will equal startLine, 
 			// but if for some reason there's a word that carries over more than one line,
 			// it is all handled.
-			var endLine:int = _textfield.getLineIndexOfChar(wordEndIndex);
+			var endLine:int = _textfield.getLineIndexOfChar(wordEndIndex - 1);
 			var m:int = endLine;
 
 			// loop through the lines containing the word
@@ -400,6 +403,8 @@ package com.destroytoday.text {
 				} else {
 					charBounds = _textfield.getCharBoundaries(_textfield.getLineOffset(i));
 				}
+				
+				if (!charBounds) continue;
 
 				wordLeft = charBounds.left;
 				wordBottom = charBounds.bottom - offsetY + _underlineOffset;
@@ -413,7 +418,7 @@ package com.destroytoday.text {
 				}
 				
 				wordRight = charBounds.right;
-				
+
 				// draw line
 				switch(_underlineStyle) {
 					case SpellCheckHighlightStyle.SOLID:
@@ -571,16 +576,51 @@ package com.destroytoday.text {
 			var textStartIndex:int = _textfield.getLineOffset(scrollV)
 				
 			// get the index of the last character in the visible text
-			var textEndIndex:int = _textfield.getLineOffset(bottomScrollV) + _textfield.getLineLength(bottomScrollV) - 1;
+			var textEndIndex:int = _textfield.getLineOffset(bottomScrollV) + _textfield.getLineLength(bottomScrollV);
 			
 			// trim the text to the visible text
 			var text:String = _textfield.text;
 			text = text.substring(textStartIndex, textEndIndex);
-			
+
 			// pad the words so words within words aren't matched with indexOf, since it doesn't have boundary markers like RegEx
 			text = text.replace(/[<>]/g, ".");
-			text = text.replace(WORDS_REPLACE_REGEX, "<$1>");
+			
+			text = text.replace(StringUtil.URL_REGEX, '$1<$2>');
+			
+			var beginIndex:int, endIndex:int;
+			var _text:String = text;
+			
+			text = "";
+			
+			while(true)
+			{
+				beginIndex = _text.indexOf('<', endIndex);
 				
+				if (beginIndex != -1)
+				{
+					text += _text.substring(endIndex, beginIndex);
+					
+					endIndex = _text.indexOf('>', beginIndex);
+					
+					m = _text.substring(beginIndex + 1, endIndex).length;
+					
+					endIndex++;
+					
+					for (i = 0; i < m; ++i)
+					{
+						text += ".";
+					}
+				}
+				else
+				{
+					break;
+				}
+			}
+			
+			text += _text.substr(endIndex);
+
+			text = text.replace(WORDS_REPLACE_REGEX, "<$2>");
+
 			// get an array of all the words in the visible text
 			var matches:Array = text.match(WORDS_MATCH_REGEX);
 			var matchStartIndex:int = -1;
@@ -766,6 +806,8 @@ package com.destroytoday.text {
 
 			// replace misspelled word with suggestion
 			_textfield.text = _textfield.text.replace(new RegExp(pattern, "g"), item.caption);
+			
+			_textfield.dispatchEvent(new Event(Event.CHANGE));
 			
 			clearAndDelay();
 		}

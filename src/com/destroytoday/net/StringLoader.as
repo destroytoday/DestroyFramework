@@ -19,7 +19,6 @@ package com.destroytoday.net {
 			_openSignal = new Signal(StringLoader);
 			_completeSignal = new Signal(StringLoader, String);
 			_errorSignal = new Signal(StringLoader, String, String);
-			_cancelSignal = new Signal(StringLoader);
 		}
 		
 		override protected function parseData(data:*):Boolean {

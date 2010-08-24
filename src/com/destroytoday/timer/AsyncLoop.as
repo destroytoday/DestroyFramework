@@ -19,22 +19,22 @@ package com.destroytoday.timer {
 		/**
 		 * @private 
 		 */		
-		protected var _started:Signal = new Signal();
+		public const started:Signal = new Signal(AsyncLoop);
 		
 		/**
 		 * @private 
 		 */		
-		protected var _changed:Signal = new Signal();
+		public const changed:Signal = new Signal(AsyncLoop);
 		
 		/**
 		 * @private 
 		 */		
-		protected var _completed:Signal = new Signal();
+		public const completed:Signal = new Signal(AsyncLoop);
 		
 		/**
 		 * @private 
 		 */		
-		protected var _cancelled:Signal = new Signal();
+		public const cancelled:Signal = new Signal(AsyncLoop);
 		
 		/**
 		 * The function to call with each tick of the loop.
@@ -54,6 +54,8 @@ package com.destroytoday.timer {
 		 * @default -1
 		 */
 		public var countLimit:int = -1;
+		
+		public var payload:Array;
 
 		/**
 		 * @private
@@ -109,38 +111,6 @@ package com.destroytoday.timer {
 		}
 		
 		/**
-		 * Returns the Signal that dispatches when the loop starts. 
-		 * @return 
-		 */		
-		public function get started():Signal {
-			return _started;
-		}
-		
-		/**
-		 * Returns the Signal that dispatches when the loop changes. 
-		 * @return 
-		 */		
-		public function get changed():Signal {
-			return _changed;
-		}
-		
-		/**
-		 * Returns the Signal that dispatches when the loop completes. 
-		 * @return 
-		 */		
-		public function get completed():Signal {
-			return _completed;
-		}
-		
-		/**
-		 * Returns the Signal that dispatches when the loop is cancelled.
-		 * @return 
-		 */		
-		public function get cancelled():Signal {
-			return _cancelled;
-		}
-
-		/**
 		 * Indicates if the loop is running.
 		 * @return
 		 */
@@ -192,9 +162,13 @@ package com.destroytoday.timer {
 		public function start():void {
 			_running = true;
 
+			_currentCount = 0;
+			_frameCount = 0;
 			_timerStart = getTimer();
+			_timerChange = -1;
+			_timerEnd = -1;
 			
-			_started.dispatch(this);
+			started.dispatch(this);
 
 			_shape.addEventListener(Event.ENTER_FRAME, enterframeHandler, false, 0, true);
 		}
@@ -212,15 +186,18 @@ package com.destroytoday.timer {
 		 * Cancels the loop and resets the loop count.
 		 */
 		public function cancel():void {
+			var running:Boolean = _running;
+
 			_running = false;
 			_currentCount = 0;
+			_frameCount = 0;
 			_timerStart = -1;
 			_timerChange = -1;
 			_timerEnd = -1;
 
 			_shape.removeEventListener(Event.ENTER_FRAME, enterframeHandler);
-
-			_cancelled.dispatch(this);
+			
+			if (running) cancelled.dispatch(this);
 		}
 
 		/**
@@ -233,7 +210,7 @@ package com.destroytoday.timer {
 
 			_shape.removeEventListener(Event.ENTER_FRAME, enterframeHandler);
 
-			_completed.dispatch(this);
+			completed.dispatch(this);
 		}
 
 		/**
@@ -249,7 +226,7 @@ package com.destroytoday.timer {
 
 			// loop until the callback returns AsyncLoopAction.BREAK, currentCount exceeds countLimit or the process time exceeds timerLimit
 			do {
-				if (callback() == AsyncLoopAction.BREAK || countLimit > 0 && _currentCount >= countLimit) {
+				if (countLimit > -1 && _currentCount >= countLimit || callback.apply(this, payload) == AsyncLoopAction.BREAK) {
 					complete();
 					break;
 				}
@@ -257,7 +234,7 @@ package com.destroytoday.timer {
 				++_currentCount;
 			} while (getTimer() - _timerChange < timerLimit);
 
-			_changed.dispatch(this);
+			changed.dispatch(this);
 		}
 	}
 }

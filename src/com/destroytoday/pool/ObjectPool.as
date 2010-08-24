@@ -80,6 +80,11 @@ package com.destroytoday.pool {
 		public function get limit():int {
 			return _limit;
 		}
+		
+		public function get numWeakObjects():int
+		{
+			return weakObjects.length;
+		}
 
 		/**
 		 * @param value

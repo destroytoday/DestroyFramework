@@ -36,12 +36,6 @@ package com.destroytoday.net {
 		protected var _errorSignal:Signal;
 		
 		/**
-		 * Signal(target)
-		 * @private 
-		 */		
-		protected var _cancelSignal:Signal;
-		
-		/**
 		 * @private 
 		 */		
 		protected var _loader:URLLoader;
@@ -85,6 +79,8 @@ package com.destroytoday.net {
 		 * @private 
 		 */		
 		protected var loading:Boolean;
+		
+		public var storage:Object;
 
 		/**
 		 * Instantiates the StringLoader class.
@@ -127,14 +123,6 @@ package com.destroytoday.net {
 		 */		
 		public function get errorSignal():Signal {
 			return _errorSignal;
-		}
-		
-		/**
-		 * The Signal that dispatches when the load is cancelled.
-		 * @return 
-		 */		
-		public function get cancelSignal():Signal {
-			return _cancelSignal;
 		}
 		
 		//
@@ -256,7 +244,6 @@ package com.destroytoday.net {
 			_openSignal = new Signal(GenericLoader);
 			_completeSignal = new Signal(GenericLoader, String);
 			_errorSignal = new Signal(GenericLoader, String, String);
-			_cancelSignal = new Signal(GenericLoader);
 		}
 		
 		/**
@@ -328,7 +315,7 @@ package com.destroytoday.net {
 			loading = false;
 			
 			_loader.close ();
-			_cancelSignal.dispatch(this);
+			_errorSignal.dispatch(this, GenericLoaderError.CANCEL, null);
 		}
 		
 		/**
@@ -341,8 +328,8 @@ package com.destroytoday.net {
 			_openSignal.removeAll();
 			_completeSignal.removeAll();
 			_errorSignal.removeAll();
-			_cancelSignal.removeAll();
 			
+			storage = null;
 			_includeResponseInfo = false;
 			_responseStatus = -1;
 			_responseHeaders = null;
