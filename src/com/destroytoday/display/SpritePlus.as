@@ -5,6 +5,8 @@ package com.destroytoday.display
 	import com.destroytoday.layouts.IMarginedLayoutElement;
 	import com.destroytoday.layouts.INonLayoutElement;
 	
+	import flash.display.DisplayObject;
+	
 	public class SpritePlus extends InvalidationSprite implements IConstrainedLayoutElement, IMarginedLayoutElement, INonLayoutElement
 	{
 		protected var _explicitWidth:Number;
@@ -205,6 +207,16 @@ package com.destroytoday.display
 			_marginTop = top;
 			_marginRight = right;
 			_marginBottom = bottom;
+		}
+		
+		public function removeChildIfContains(child:DisplayObject):DisplayObject
+		{
+			return (child && contains(child)) ? removeChild(child) : child;
+		}
+		
+		public function addChildAtIndexInBounds(child:DisplayObject, index:int):DisplayObject
+		{
+			return addChildAt(child, Math.max(0, Math.min(numChildren, index)));
 		}
 	}
 }

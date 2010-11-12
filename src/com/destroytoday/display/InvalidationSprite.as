@@ -9,8 +9,6 @@ package com.destroytoday.display
 	
 	public class InvalidationSprite extends Sprite implements IBasicLayoutElement
 	{
-		protected var _stage : Stage;
-		
 		protected var invalidateFlag:Boolean;
 		
 		protected var invalidatePropertiesFlag:Boolean;
@@ -31,11 +29,8 @@ package com.destroytoday.display
 			if (stage && !invalidateFlag) {
 				invalidateFlag = true;
 				
-				// TRICKY: As a backup, add an ENTER_FRAME listener in case we
-				//         were already in a RENDER frame. If RENDER happens
-				//         first, then we go with that. 
-				addEventListener(Event.RENDER, invalidateHandler);
-				addEventListener(Event.ENTER_FRAME, invalidateHandler);
+				stage.addEventListener(Event.RENDER, invalidateHandler);
+				stage.addEventListener(Event.ENTER_FRAME, invalidateHandler);
 				stage.invalidate();
 			}
 
@@ -84,8 +79,7 @@ package com.destroytoday.display
 		
 		public function validateNow():void
 		{
-			if ( stage )
-				stage.removeEventListener(Event.RENDER, invalidateHandler);
+			if (stage) stage.removeEventListener(Event.RENDER, invalidateHandler);
 			removeEventListener(Event.ENTER_FRAME, invalidateHandler);
 
 			if (invalidatePropertiesFlag) {
@@ -120,15 +114,14 @@ package com.destroytoday.display
 
 		protected function addedToStageHandler(event:Event):void 
 		{
-			_stage = stage;
 			invalidateSize();
 			invalidateDisplayList();
 		}
 		
-		
 		protected function removedFromStageHandler(event:Event):void 
 		{
 			stage.removeEventListener(Event.RENDER, invalidateHandler);
+			stage.removeEventListener(Event.ENTER_FRAME, invalidateHandler);
 			invalidateFlag = false;
 		}
 		

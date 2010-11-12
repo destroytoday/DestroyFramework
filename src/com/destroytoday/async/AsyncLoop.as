@@ -1,6 +1,4 @@
-package com.destroytoday.timer {
-	import com.destroytoday.events.EventDispatcherPlus;
-	
+package com.destroytoday.async {
 	import flash.display.Shape;
 	import flash.events.Event;
 	import flash.utils.getTimer;

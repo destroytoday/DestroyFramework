@@ -1,4 +1,4 @@
-package com.destroytoday.timer {
+package com.destroytoday.async {
 
 	/**
 	 * @author Jonnie Hallman

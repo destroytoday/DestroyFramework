@@ -154,7 +154,7 @@ package com.destroytoday.text {
 			_text = value;
 
 			if (!_inTransaction) super.text = value;
-			
+
 			if (multiline && _autoSize != TextFieldAutoSize.NONE) updateSize();
 		}
 		
@@ -234,7 +234,7 @@ package com.destroytoday.text {
 		public function commitText():void {
 			_inTransaction = false;
 			
-			text = _text;
+			super.text = _text;
 		}
 		
 		/**
@@ -243,7 +243,7 @@ package com.destroytoday.text {
 		public function updateSize():void {
 			// temporarily set autoSize to actual value
 			super.autoSize = _autoSize;
-			
+
 			// record height when auto-sized
 			var height:Number = this.height + _heightOffset;
 			

@@ -45,25 +45,6 @@ package com.destroytoday.pool {
 		}
 
 		/**
-		 * An optional function for instantiating objects in the pool to accommodate ones that require arguments in their constructors.
-		 * The function <i>must</i> return the object that is instantiated.
-		 * @default null
-		 * @example The following code is an example of using <code>factoryFunction</code> to allow the Timer class be used in a pool:
-		 * <listing version="3.0">
-		 * var pool:ObjectPool = new ObjectPool(Timer);
-		 *
-		 * function _instantiator():Object {
-		 * 	return new Timer(0);
-		 * }
-		 *
-		 * pool.factoryFunction = _instantiator;
-		 *
-		 * var timer:Timer = pool.getObject() as Timer;
-		 * </listing>
-		 */
-		public var instantiator:Function;
-
-		/**
 		 * @param type the class of the objects
 		 */
 		public function ObjectPool(type:Class) {
@@ -85,7 +66,7 @@ package com.destroytoday.pool {
 		{
 			return weakObjects.length;
 		}
-
+		
 		/**
 		 * @param value
 		 * @example The following code is an example of using <code>limit</code> to confine the size of the pool:
@@ -204,13 +185,25 @@ package com.destroytoday.pool {
 
 				--weakObjects.length;
 			} else {
-				object = (instantiator != null) ? instantiator() : new type();
+				object = constructObject();
 			}
+			
+			object = processObject(object);
 
 			if (!weak && !strongObjectExists(object)) {
 				strongObjects[strongObjects.length] = object;
 			}
 
+			return object;
+		}
+		
+		protected function constructObject():Object
+		{
+			return new type();
+		}
+		
+		protected function processObject(object:Object):Object
+		{
 			return object;
 		}
 
@@ -277,8 +270,13 @@ package com.destroytoday.pool {
 					strongObjects.splice(n, 1);
 				}
 			}
+			else
+			{
+				object = constructObject();
+				object = processObject(object);
+			}
 
-			weakObjects[weakObjects.length] = object ? object : ((instantiator != null) ? instantiator() : new type());
+			weakObjects[weakObjects.length] = object;
 		}
 	}
 }

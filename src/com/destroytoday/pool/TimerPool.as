@@ -4,11 +4,9 @@ package com.destroytoday.pool {
 	public class TimerPool extends ObjectPool {
 		public function TimerPool() {
 			super(Timer);
-
-			instantiator = _instantiator;
 		}
 
-		protected function _instantiator():Object {
+		override protected function constructObject():Object {
 			return new Timer(0);
 		}
 	}
