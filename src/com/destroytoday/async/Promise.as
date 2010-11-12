@@ -235,7 +235,7 @@ package com.destroytoday.async
 			}
 		}
 		
-		protected function processResult(result:*):*
+		protected function processResult(result:Object):Object
 		{
 			if (_resultProcessorList)
 			{
