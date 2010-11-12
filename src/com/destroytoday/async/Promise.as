@@ -5,7 +5,7 @@ package com.destroytoday.async
 	import com.destroytoday.core.IPromise;
 	
 	/**
-	 * Based on Shaun Smith's event-based Promise class
+	 * Based on Shaun Smith's Promise class
 	 * https://github.com/darscan/robotlegs-extensions-Oil/blob/master/src/org/robotlegs/oil/async/Promise.as
 	 * @author Jonnie Hallman
 	 */
@@ -175,7 +175,7 @@ package com.destroytoday.async
 			
 			setStatus(PromiseState.COMPLETE);
 			dispatch(_resultListenerList);
-			resetListeners();
+			removeAllListeners();
 		}
 		
 		public function dispatchError(value:Object):void
@@ -184,7 +184,7 @@ package com.destroytoday.async
 			
 			setStatus(PromiseState.FAILED);
 			dispatch(_errorListenerList);
-			resetListeners();
+			removeAllListeners();
 		}
 		
 		public function dispatchProgress(value:Object):void
@@ -197,7 +197,7 @@ package com.destroytoday.async
 		public function cancel():void
 		{
 			setStatus(PromiseState.CANCELLED);
-			resetListeners();
+			removeAllListeners();
 		}
 		
 		public function dispose():void
@@ -207,10 +207,10 @@ package com.destroytoday.async
 			_error = null;
 			_progress = null;
 			
-			resetListeners();
+			removeAllListeners();
 		}
 		
-		protected function resetListeners():void
+		protected function removeAllListeners():void
 		{
 			if (_resultListenerList)
 				_resultListenerList.length = 0;
