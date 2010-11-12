@@ -37,17 +37,10 @@ package com.destroytoday.async
 			promise = null;
 		}
 
-		public function testHandleFutureError():void
+		public function testHandleError():void
 		{
-			promise.addErrorListener(supportErrorListener);
+			promise.failed.add(supportErrorListener);
 			promise.dispatchError(null);
-			assertTrue("Error dispatcher should run", errorListenerHitCount > 0);
-		}
-		
-		public function testHandleOldError():void
-		{
-			promise.dispatchError(null);
-			promise.addErrorListener(supportErrorListener);
 			assertTrue("Error dispatcher should run", errorListenerHitCount > 0);
 		}
 		
@@ -56,17 +49,10 @@ package com.destroytoday.async
 			errorListenerHitCount++;
 		}
 		
-		public function testHandleFutureProgress():void
+		public function testHandleProgress():void
 		{
-			promise.addProgressListener(supportProgressListener);
+			promise.progressChanged.add(supportProgressListener);
 			promise.dispatchProgress(null);
-			assertTrue("Progress dispatcher should run", progressListenerHitCount > 0);
-		}
-		
-		public function testHandleOldProgress():void
-		{
-			promise.dispatchResult(null);
-			promise.addProgressListener(supportProgressListener);
 			assertTrue("Progress dispatcher should run", progressListenerHitCount > 0);
 		}
 		
@@ -75,17 +61,10 @@ package com.destroytoday.async
 			progressListenerHitCount++;
 		}
 		
-		public function testHandleFutureResult():void
+		public function testHandleResult():void
 		{
-			promise.addResultListener(supportResultListener);
+			promise.completed.add(supportResultListener);
 			promise.dispatchResult(null);
-			assertTrue("Result dispatcher should run", resultListenerHitCount > 0);
-		}
-		
-		public function testHandleOldResult():void
-		{
-			promise.dispatchResult(null);
-			promise.addResultListener(supportResultListener);
 			assertTrue("Result dispatcher should run", resultListenerHitCount > 0);
 		}
 		
@@ -96,11 +75,11 @@ package com.destroytoday.async
 		
 		public function testHandleStatus():void
 		{
-			promise.addStatusListener(supportStatusListener);
+			promise.statusChanged.add(supportStatusListener);
 			promise.dispatchError(false);
-			promise.addStatusListener(supportStatusListener); // because listeners are removed upon error
+			promise.statusChanged.add(supportStatusListener); // because listeners are removed upon error
 			promise.dispatchResult(true);
-			promise.addStatusListener(supportStatusListener); // because listeners are removed upon result
+			promise.statusChanged.add(supportStatusListener); // because listeners are removed upon result
 			promise.cancel();
 			
 			assertEquals("Status dispatcher should run", 3, statusListenerHitCount);
@@ -141,9 +120,9 @@ package com.destroytoday.async
 		
 		public function testCancel():void
 		{
-			promise.addErrorListener(supportErrorListener);
-			promise.addProgressListener(supportProgressListener);
-			promise.addResultListener(supportResultListener);
+			promise.failed.add(supportErrorListener);
+			promise.progressChanged.add(supportProgressListener);
+			promise.failed.add(supportResultListener);
 			promise.cancel();
 			promise.dispatchError(null);
 			promise.dispatchProgress(null);
@@ -153,23 +132,12 @@ package com.destroytoday.async
 			assertTrue("Result dispatcher should NOT have run", resultListenerHitCount == 0);
 		}
 		
-		public function testHandleFutureResultProcessor():void
+		public function testHandleResultProcessor():void
 		{
 			promise.addResultProcessor(supportResultProcessor1);
 			promise.addResultProcessor(supportResultProcessor2);
-			promise.addResultListener(supportResultProcessorListener);
+			promise.completed.add(supportResultProcessorListener);
 			promise.dispatchResult(100);
-			assertTrue("Result dispatcher should run", resultListenerHitCount > 0);
-			assertEquals("Result should be processed", "processed", promise.result.title);
-			assertEquals("Result should be processed", "Test100", promise.result.string);
-		}
-		
-		public function testHandleOldResultProcessor():void
-		{
-			promise.addResultProcessor(supportResultProcessor1);
-			promise.addResultProcessor(supportResultProcessor2);
-			promise.dispatchResult(100);
-			promise.addResultListener(supportResultProcessorListener);
 			assertTrue("Result dispatcher should run", resultListenerHitCount > 0);
 			assertEquals("Result should be processed", "processed", promise.result.title);
 			assertEquals("Result should be processed", "Test100", promise.result.string);
