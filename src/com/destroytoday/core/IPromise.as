@@ -12,14 +12,15 @@ package com.destroytoday.core
 		function get progressChanged():ISignal;
 		function get statusChanged():ISignal;
 		
-		function get result():Object;
-		function get error():Object;
-		function get progress():Object;
+		function get result():*;
+		function get error():*;
+		function get progress():*;
 		function get status():String;
 		
-		function dispatchResult(value:Object):void;
-		function dispatchError(value:Object):void;
-		function dispatchProgress(value:Object):void;
+		function dispatchResult(value:*):void;
+		function dispatchError(value:*):void;
+		function dispatchProgress(value:*):void;
+		function addResultProcessor(processor:Function):IPromise;
 		
 		function cancel():void;
 	}

@@ -17,6 +17,8 @@ package com.destroytoday.net
 		protected const icon:Class;
 		
 		protected const iconURL:String = "file:///Users/jhallman/Sites/Frink/DestroyFramework/embed/test/icon.jpg";
+
+		protected const errorURL:String = "file:///Users/jhallman/Sites/Frink/DestroyFramework/embed/test/doesntexist.jpg";
 		
 		//--------------------------------------------------------------------------
 		//
@@ -119,6 +121,27 @@ package com.destroytoday.net
 			
 			assertNull("bitmap disposed", bitmap.bitmapData);
 			assertFalse("bitmap reference removed", bitmapCache.hasReference(bitmap));
+		}
+		
+		public function testDefaultBitmapDataInjectedBeforeLoadCompletes():void
+		{
+			factory.defaultBitmapData = (new icon() as Bitmap).bitmapData;
+			
+			bitmapCache = factory.getBitmapCache(iconURL, bitmap);
+			
+			assertSame(factory.defaultBitmapData, bitmapCache.bitmapData);
+		}
+		
+		public function testDefaultBitmapDataRemainsAfterLoadError():void
+		{
+			factory.defaultBitmapData = (new icon() as Bitmap).bitmapData;
+			
+			bitmapCache = factory.getBitmapCache(errorURL, bitmap);
+			
+			setTimeout(addAsync(function():void 
+			{ 
+				assertSame(factory.defaultBitmapData, bitmapCache.bitmapData);
+			}, 1000), 500.0);
 		}
 	}
 }

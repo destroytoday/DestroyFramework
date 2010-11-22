@@ -32,11 +32,11 @@ package com.destroytoday.async
 		
 		protected var _status:String = PromiseState.PENDING;
 		
-		protected var _result:Object;
+		protected var _result:*;
 		
-		protected var _error:Object;
+		protected var _error:*;
 		
-		protected var _progress:Object;
+		protected var _progress:*;
 		
 		//--------------------------------------------------------------------------
 		//
@@ -88,17 +88,17 @@ package com.destroytoday.async
 			if (_statusChanged) _statusChanged.dispatch(this);
 		}
 		
-		public function get result():Object
+		public function get result():*
 		{
 			return _result;
 		}
 		
-		public function get error():Object
+		public function get error():*
 		{
 			return _error;
 		}
 		
-		public function get progress():Object
+		public function get progress():*
 		{
 			return _progress;
 		}
@@ -122,7 +122,7 @@ package com.destroytoday.async
 			return this;
 		}
 		
-		public function dispatchResult(value:Object):void
+		public function dispatchResult(value:*):void
 		{
 			value = processResult(value);
 			_result = value;
@@ -134,7 +134,7 @@ package com.destroytoday.async
 			removeAllListeners();
 		}
 		
-		public function dispatchError(value:Object):void
+		public function dispatchError(value:*):void
 		{
 			_error = value;
 			
@@ -145,7 +145,7 @@ package com.destroytoday.async
 			removeAllListeners();
 		}
 		
-		public function dispatchProgress(value:Object):void
+		public function dispatchProgress(value:*):void
 		{
 			_progress = value;
 			
@@ -183,7 +183,7 @@ package com.destroytoday.async
 				_resultProcessorList.length = 0;
 		}
 		
-		protected function processResult(result:Object):Object
+		protected function processResult(result:*):*
 		{
 			if (_resultProcessorList)
 			{

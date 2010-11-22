@@ -3,6 +3,7 @@ package com.destroytoday.net
 	import com.destroytoday.pool.ObjectPool;
 	
 	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
 	import flash.events.Event;
@@ -32,14 +33,18 @@ package com.destroytoday.net
 		
 		protected var disposeTimer:Timer = new Timer(1800000.0); // half hour by default
 		
+		protected var _defaultBitmapData:BitmapData;
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Constructor
 		//
 		//--------------------------------------------------------------------------
 		
-		public function BitmapCacheFactory()
+		public function BitmapCacheFactory(defaultBitmapData:BitmapData = null)
 		{
+			_defaultBitmapData = defaultBitmapData;
+			
 			disposeTimer.addEventListener(TimerEvent.TIMER, timerHandler);
 			
 			disposeTimer.start();
@@ -54,6 +59,18 @@ package com.destroytoday.net
 		public function get numBitmapCaches():int
 		{
 			return bitmapCacheList.length;
+		}
+		
+		public function get defaultBitmapData():BitmapData
+		{
+			return _defaultBitmapData;
+		}
+		
+		public function set defaultBitmapData(value:BitmapData):void
+		{
+			if (value == _defaultBitmapData) return;
+			
+			_defaultBitmapData = value;
 		}
 		
 		//--------------------------------------------------------------------------
@@ -74,11 +91,22 @@ package com.destroytoday.net
 			{
 				bitmapCache = bitmapCachePool.getObject() as BitmapCache;
 				
+				if (_defaultBitmapData) bitmapCache.bitmapData = _defaultBitmapData;
+				
 				addBitmapCache(bitmapCache, url);
 			}
 			else
 			{
-				isLoading = (bitmapCache.bitmapData == null);
+				isLoading = (bitmapCache.bitmapData == null || bitmapCache.bitmapData === _defaultBitmapData);
+			}
+			
+			if (bitmap)
+			{
+				// remove bitmap's existing reference
+				removeReference(bitmap);
+				
+				// add reference for automatic bitmapData injection
+				bitmapCache.addReference(bitmap);
 			}
 			
 			// 
@@ -92,15 +120,6 @@ package com.destroytoday.net
 				loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, bitmapCacheLoaderErrorHandler);
 				
 				loader.load(new URLRequest(url));
-			}
-			
-			if (bitmap)
-			{
-				// remove bitmap's existing reference
-				removeReference(bitmap);
-				
-				// add reference for automatic bitmapData injection
-				bitmapCache.addReference(bitmap);
 			}
 			
 			return bitmapCache;
